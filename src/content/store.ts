@@ -7,7 +7,8 @@ import { orderList } from "./derive";
 import { referencesTo, sourceOptions, specs, type ListSpec, type Spec } from "./schema";
 import { seed } from "./seed";
 import type { CollectionKey, Content, ListKey, SingleKey } from "./types";
-import type { SourceOptions } from "./validate";
+import { validate, type SourceOptions } from "./validate";
+import { databaseUrl } from "@/lib/env";
 
 type Row = { id: string; collection: string; position: number; data: Record<string, unknown>; updated_at: Date };
 type Data = Record<string, unknown>;
@@ -46,6 +47,7 @@ declare global {
  */
 export const getContent = cache(async (): Promise<Content> => {
   await connection();
+  if (!databaseUrl()) return builtInContent();
   await ready();
   const [stamp] = await db()<{ version: string }[]>`
     select count(*) || ':' || coalesce(max(updated_at)::text, '') as version from entries`;
@@ -57,6 +59,35 @@ export const getContent = cache(async (): Promise<Content> => {
   globalThis.__portfolioContent = { version, content };
   return content;
 });
+
+let builtIn: Content | undefined;
+
+/**
+ * Without a database (for example a quick preview deployment), the site shows its original content
+ * from src/content/seed, read-only and cleaned exactly as it would be when seeding a database.
+ */
+function builtInContent(): Content {
+  if (builtIn) return builtIn;
+  console.warn("No DATABASE_URL: showing the built-in content, read-only. The admin is disabled.");
+  const sources = sourceOptions((key: ListKey) => seed[key]);
+  const content: Record<string, unknown> = {};
+  for (const spec of Object.values(specs) as Spec[]) {
+    if (spec.kind === "single") {
+      content[spec.key] = validate(spec.fields, seed[spec.key], sources).data;
+      continue;
+    }
+    const items = (seed[spec.key] as unknown[]).map((item, i) => ({
+      ...validate(spec.fields, item, sources).data,
+      id: `${spec.key}-${i}`,
+    }));
+    const parent = spec.parent;
+    const parents = parent && (seed[parent.from] as Data[]).map((p) => String(p[parent.value]));
+    content[spec.key] = orderList(spec, items, parents);
+  }
+  content.updatedAt = new Date();
+  builtIn = content as Content;
+  return builtIn;
+}
 
 async function loadContent(): Promise<Content> {
   const all = await rows();
@@ -255,7 +286,7 @@ export async function saveMedia(file: {
 }
 
 export async function getMedia(id: string) {
-  if (!isId(id)) return null;
+  if (!isId(id) || !databaseUrl()) return null;
   await ready();
   const [row] = await db()<{ filename: string; content_type: string; bytes: Buffer }[]>`
     select filename, content_type, bytes from media where id = ${id}`;

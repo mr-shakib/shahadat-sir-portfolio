@@ -71,6 +71,12 @@ The 49 lectures in `src/content/seed/lectures.json` were imported from the cours
 
 ## Deploy on Vercel
 
+**Quick preview, no database.** Import the repository into Vercel and deploy; nothing else is needed. Without
+`DATABASE_URL` the public site shows the original content from [`src/content/seed/`](src/content/seed/), read-only,
+and `/admin` says it isn't set up. Add a database later to make the site editable.
+
+**Full setup, with the admin:**
+
 1. **Import the repository.** In Vercel, choose *Add New → Project* and import this GitHub repository. The framework
    (Next.js) and build settings are detected; leave them as they are.
 2. **Add a database.** In the project, open *Storage → Create Database → Neon (Postgres)*. Pick the **Singapore**
