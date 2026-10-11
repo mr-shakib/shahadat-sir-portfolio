@@ -1,0 +1,535 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Design tokens ─────────────────────────────────────────────── */
+:root {
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --surface-2: #f0eee8;
+  --fg: #131722;
+  --fg-2: #39404f;
+  --muted: #616878;
+  --line: #e3e0d7;
+  --line-strong: #cfcbc0;
+  --primary: #1f4bb0;
+  --primary-hover: #173a8c;
+  --primary-soft: #e9eefa;
+  --on-primary: #ffffff;
+  --gold: #94570a;
+  --gold-bright: #c98a2c;
+  --gold-soft: #f6ecdc;
+  --chart: #2556c4;
+  --chart-soft: #6585d0;
+  --ink: #0e1a31;
+  --ink-2: #16264a;
+  --on-ink: #e9edf6;
+  --on-ink-muted: #a8b3c9;
+  --danger: #b42318;
+  --danger-soft: #fdf0ee;
+  --success: #067647;
+  --success-soft: #e9f7ef;
+  --shadow: 0 1px 2px rgb(19 23 34 / 0.04), 0 8px 24px -12px rgb(19 23 34 / 0.12);
+  --shadow-lg: 0 2px 4px rgb(19 23 34 / 0.04), 0 24px 48px -20px rgb(19 23 34 / 0.22);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0b111c;
+  --surface: #111a2b;
+  --surface-2: #172238;
+  --fg: #e8ebf2;
+  --fg-2: #c4cad7;
+  --muted: #959eb1;
+  --line: #223049;
+  --line-strong: #31415f;
+  --primary: #8fb0ff;
+  --primary-hover: #b0c8ff;
+  --primary-soft: #18264a;
+  --on-primary: #0b111c;
+  --gold: #e9b061;
+  --gold-bright: #e9b061;
+  --gold-soft: #2a2416;
+  --chart: #5a88e6;
+  --chart-soft: #3f63ad;
+  --ink: #070c15;
+  --ink-2: #0f1828;
+  --on-ink: #e8ebf2;
+  --on-ink-muted: #98a3b8;
+  --danger: #f97066;
+  --danger-soft: #2c1517;
+  --success: #47cd89;
+  --success-soft: #0f2a1d;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 2px 4px rgb(0 0 0 / 0.3), 0 24px 48px -20px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: var(--font-source-serif), ui-serif, Georgia, "Times New Roman", serif;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-on-primary: var(--on-primary);
+  --color-gold: var(--gold);
+  --color-gold-bright: var(--gold-bright);
+  --color-gold-soft: var(--gold-soft);
+  --color-chart: var(--chart);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-on-ink: var(--on-ink);
+  --color-on-ink-muted: var(--on-ink-muted);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+
+  --shadow-card: var(--shadow);
+  --shadow-card-lg: var(--shadow-lg);
+}
+
+/* ── Base ──────────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--primary) 22%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+[id] {
+  scroll-margin-top: 6rem;
+}
+
+/* ── Reusable pieces ───────────────────────────────────────────── */
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 640px) {
+    .container-page {
+      padding-inline: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-page {
+      padding-inline: 2rem;
+    }
+  }
+
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    box-shadow: var(--shadow);
+  }
+
+  .link {
+    color: var(--primary);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklab, var(--primary) 35%, transparent);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.2s;
+  }
+  .link:hover {
+    text-decoration-color: var(--primary);
+  }
+
+  .prose-academic p + p {
+    margin-top: 1rem;
+  }
+
+  /* ── Admin controls ── */
+  .field-input {
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--fg);
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
+  }
+  .field-input::placeholder {
+    color: color-mix(in oklab, var(--muted) 75%, transparent);
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 18%, transparent);
+  }
+  .field-input[aria-invalid="true"] {
+    border-color: var(--danger);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s,
+      color 0.15s;
+  }
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: var(--on-primary);
+  }
+  .btn-primary:not(:disabled):hover {
+    background: var(--primary-hover);
+  }
+  .btn-secondary {
+    border-color: var(--line-strong);
+    background: var(--surface);
+    color: var(--fg);
+  }
+  .btn-secondary:not(:disabled):hover {
+    border-color: color-mix(in oklab, var(--fg) 40%, transparent);
+  }
+  .btn-danger {
+    border-color: color-mix(in oklab, var(--danger) 35%, transparent);
+    background: var(--surface);
+    color: var(--danger);
+  }
+  .btn-danger:not(:disabled):hover {
+    background: var(--danger-soft);
+  }
+  .btn-icon {
+    display: inline-flex;
+    width: 2rem;
+    height: 2rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    color: var(--muted);
+    transition:
+      background-color 0.15s,
+      color 0.15s;
+  }
+  .btn-icon:not(:disabled):hover {
+    background: var(--surface-2);
+    color: var(--fg);
+  }
+  .btn-icon:disabled {
+    opacity: 0.3;
+  }
+}
+
+/* ── Lecture notes (rendered Markdown) ──────────────────────────── */
+.prose-lecture {
+  color: var(--fg-2);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+.prose-lecture > * + * {
+  margin-top: 1.15em;
+}
+.prose-lecture h2 {
+  margin-top: 2.2em;
+  font-family: var(--font-serif);
+  font-size: 1.65rem;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+.prose-lecture h3 {
+  margin-top: 2em;
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--fg);
+}
+.prose-lecture h4 {
+  margin-top: 1.6em;
+  font-weight: 600;
+  color: var(--fg);
+}
+.prose-lecture > :first-child {
+  margin-top: 0;
+}
+.prose-lecture :is(h2, h3, h4) + * {
+  margin-top: 0.6em;
+}
+.prose-lecture strong {
+  font-weight: 600;
+  color: var(--fg);
+}
+.prose-lecture a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--primary) 35%, transparent);
+  text-underline-offset: 3px;
+}
+.prose-lecture a:hover {
+  text-decoration-color: var(--primary);
+}
+.prose-lecture ul,
+.prose-lecture ol {
+  padding-left: 1.4em;
+}
+.prose-lecture ul {
+  list-style: disc;
+}
+.prose-lecture ol {
+  list-style: decimal;
+}
+.prose-lecture li + li,
+.prose-lecture li > :is(ul, ol) {
+  margin-top: 0.35em;
+}
+.prose-lecture li::marker {
+  color: var(--muted);
+}
+.prose-lecture :not(pre) > code {
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  background: var(--surface-2);
+  padding: 0.08em 0.35em;
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  color: var(--fg);
+}
+.prose-lecture pre {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  padding: 1rem 1.15rem;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  line-height: 1.65;
+  color: var(--fg);
+  tab-size: 4;
+  box-shadow: var(--shadow);
+}
+.prose-lecture img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+  background: #fff;
+}
+.prose-lecture p:has(> img:only-child) {
+  margin-top: 1.4em;
+  margin-bottom: 1.4em;
+}
+.prose-lecture blockquote {
+  border-left: 2px solid var(--gold-bright);
+  padding-left: 1.1em;
+  font-style: italic;
+}
+.prose-lecture hr {
+  margin-block: 2.5em;
+  border-color: var(--line);
+}
+.prose-lecture table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+.prose-lecture :is(th, td) {
+  border: 1px solid var(--line);
+  padding: 0.45em 0.75em;
+  text-align: left;
+}
+.prose-lecture th {
+  background: var(--surface-2);
+  font-weight: 600;
+  color: var(--fg);
+}
+
+/* Code highlighting, in the site's colours */
+.hljs-keyword,
+.hljs-built_in,
+.hljs-type,
+.hljs-meta .hljs-keyword {
+  color: var(--primary);
+}
+.hljs-string,
+.hljs-char,
+.hljs-regexp {
+  color: var(--gold);
+}
+.hljs-number,
+.hljs-literal {
+  color: var(--chart);
+}
+.hljs-comment {
+  color: var(--muted);
+  font-style: italic;
+}
+.hljs-title,
+.hljs-function .hljs-title {
+  color: var(--fg);
+  font-weight: 600;
+}
+.hljs-meta,
+.hljs-doctag {
+  color: var(--muted);
+}
+
+/* Subtle grid used behind page headers and the hero. */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--fg) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--fg) 6%, transparent) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 40%, transparent 100%);
+}
+
+.bg-grid-ink {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 70% 80% at 80% 20%, #000 30%, transparent 100%);
+}
+
+/* ── Reveal-on-scroll (only when JS is running, never hides content otherwise) ── */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js .reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Above-the-fold entrance: pure CSS, so it plays even before (or without) hydration. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+/* ── Hero ──────────────────────────────────────────────────────── */
+@keyframes photo-in {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+}
+.photo-in {
+  animation: photo-in 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Small bar marks used by the "at a glance" charts */
+@keyframes grow-y {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+.grow-y {
+  transform-origin: bottom;
+  animation: grow-y 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.grow-x {
+  transform-origin: left;
+  animation: grow-x 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+/* Below the fold, hold the bars until their section scrolls into view. */
+.js .reveal:not([data-visible="true"]) :is(.grow-y, .grow-x) {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .rise,
+  .photo-in,
+  .grow-y,
+  .grow-x {
+    animation: none;
+  }
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+@media print {
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+}
