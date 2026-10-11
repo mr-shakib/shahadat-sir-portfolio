@@ -2,6 +2,7 @@ import "server-only";
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { databaseUrl } from "./env";
 
 const COOKIE = "admin_session";
 const MAX_AGE = 60 * 60 * 24 * 7;
@@ -10,9 +11,7 @@ const sha256 = (s: string) => createHash("sha256").update(s).digest();
 
 /** True when the environment has everything /admin needs. */
 export function adminConfigured() {
-  return Boolean(
-    process.env.DATABASE_URL && process.env.ADMIN_PASSWORD && (process.env.SESSION_SECRET?.length ?? 0) >= 32,
-  );
+  return Boolean(databaseUrl() && process.env.ADMIN_PASSWORD && (process.env.SESSION_SECRET?.length ?? 0) >= 32);
 }
 
 /** Signs with both secrets, so changing the password signs every session out. */

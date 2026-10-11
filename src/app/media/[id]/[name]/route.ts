@@ -11,7 +11,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
       "Content-Type": file.content_type,
       "Content-Length": String(file.bytes.length),
       "Content-Disposition": `inline; filename="${file.filename}"`,
-      "Cache-Control": "public, max-age=31536000, immutable",
+      // s-maxage lets Vercel's CDN keep a copy, so the database is read once per file.
+      "Cache-Control": "public, max-age=31536000, s-maxage=31536000, immutable",
       "X-Content-Type-Options": "nosniff",
     },
   });

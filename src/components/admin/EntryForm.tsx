@@ -7,6 +7,7 @@ import { deleteItem, saveItem } from "@/app/admin/actions";
 import { specs, type Spec } from "@/content/schema";
 import type { CollectionKey } from "@/content/types";
 import { validate, type Errors, type SourceOptions } from "@/content/validate";
+import type { UploadConfig } from "@/lib/env";
 import { fieldId, Fields, FormCtx, type Path } from "./fields";
 
 type Props = {
@@ -16,6 +17,8 @@ type Props = {
   initial: Record<string, unknown>;
   updatedAt?: string;
   sources: SourceOptions;
+  /** Where uploads go, from the server environment. */
+  uploads: UploadConfig;
 };
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
@@ -46,13 +49,13 @@ function focusFirstError(errors: Errors) {
   });
 }
 
-export function EntryForm({ collection, id, initial, updatedAt, sources }: Props) {
+export function EntryForm({ collection, id, initial, updatedAt, sources, uploads }: Props) {
   const spec = specs[collection] as Spec;
   const router = useRouter();
   const [data, setData] = useState<Record<string, unknown>>(initial);
   const [errors, setErrors] = useState<Errors>({});
   const [message, setMessage] = useState<string>();
-  const [uploads, setUploads] = useState(0);
+  const [inFlight, setInFlight] = useState(0);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [pending, start] = useTransition();
   const saving = useRef(false);
@@ -64,8 +67,8 @@ export function EntryForm({ collection, id, initial, updatedAt, sources }: Props
   const set = useCallback((path: Path, value: unknown) => {
     setData((d) => setIn(d, path, value) as Record<string, unknown>);
   }, []);
-  const uploading = useCallback((delta: 1 | -1) => setUploads((n) => n + delta), []);
-  const ctx = useMemo(() => ({ errors, sources, set, uploading }), [errors, sources, set, uploading]);
+  const uploading = useCallback((delta: 1 | -1) => setInFlight((n) => n + delta), []);
+  const ctx = useMemo(() => ({ errors, sources, set, uploading, uploads }), [errors, sources, set, uploading, uploads]);
 
   // Warn before losing unsaved changes: closing the tab, or following a link inside the admin.
   useEffect(() => {
@@ -126,7 +129,7 @@ export function EntryForm({ collection, id, initial, updatedAt, sources }: Props
       router.push(listHref);
     });
 
-  const busy = pending || uploads > 0;
+  const busy = pending || inFlight > 0;
 
   return (
     <FormCtx.Provider value={ctx}>
@@ -149,7 +152,7 @@ export function EntryForm({ collection, id, initial, updatedAt, sources }: Props
 
         <div className="sticky bottom-0 z-30 -mx-4 mt-6 flex flex-wrap items-center gap-3 border-t border-line bg-bg/90 px-4 py-4 backdrop-blur sm:mx-0 sm:rounded-xl sm:border sm:px-5">
           <button type="submit" disabled={busy} className="btn btn-primary">
-            {pending ? "Saving…" : uploads ? "Uploading…" : "Save"}
+            {pending ? "Saving…" : inFlight ? "Uploading…" : "Save"}
           </button>
           {spec.kind === "list" && (
             <button type="button" disabled={busy} className="btn btn-secondary" onClick={() => submit("new")}>

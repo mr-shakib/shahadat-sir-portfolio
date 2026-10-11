@@ -5,6 +5,7 @@ import { EntryForm } from "@/components/admin/EntryForm";
 import { getSpec, type ListSpec } from "@/content/schema";
 import { getEntry, loadSources } from "@/content/store";
 import { requireAdmin } from "@/lib/auth";
+import { uploadConfig } from "@/lib/env";
 
 type Props = { params: Promise<{ collection: string; id: string }> };
 
@@ -38,6 +39,7 @@ export default async function EditEntryPage({ params }: Props) {
         initial={entry.data}
         updatedAt={entry.updatedAt}
         sources={sources}
+        uploads={uploadConfig()}
       />
     </>
   );

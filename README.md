@@ -61,22 +61,41 @@ The 49 lectures in `src/content/seed/lectures.json` were imported from the cours
 
 ## Environment variables
 
-| Variable               | Purpose                                                                  |
-| ---------------------- | ------------------------------------------------------------------------ |
-| `DATABASE_URL`         | Postgres connection string                                               |
-| `ADMIN_PASSWORD`       | Password for `/admin` (use 12+ characters). Changing it signs everyone out. |
-| `SESSION_SECRET`       | Random string of 32+ characters that signs admin sessions (`openssl rand -base64 32`) |
-| `NEXT_PUBLIC_SITE_URL` | Public URL, for canonical links, the sitemap and social previews (needed at build time) |
+| Variable                | Purpose                                                                                       |
+| ----------------------- | --------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`          | Postgres connection string (`POSTGRES_URL` is also accepted). Set by Vercel's Neon integration. |
+| `ADMIN_PASSWORD`        | Password for `/admin` (use 12+ characters). Changing it signs everyone out.                   |
+| `SESSION_SECRET`        | Random string of 32+ characters that signs admin sessions (`openssl rand -base64 32`)          |
+| `NEXT_PUBLIC_SITE_URL`  | Public URL, for canonical links, the sitemap and social previews. On Vercel it defaults to the production domain; set it for a custom domain. |
+| `BLOB_READ_WRITE_TOKEN` | Optional. Set by Vercel when a Blob store is connected; admin uploads then go to Blob.        |
 
-## Deploy
+## Deploy on Vercel
 
-The site runs as a Node server (`npm run build`, then `npm start`; it listens on `$PORT`) next to a Postgres database.
-On **Railway**: create a project with a Postgres database and a service from this repository, then set
-`DATABASE_URL` to the database's `${{Postgres.DATABASE_URL}}` reference and add the other variables above. Any host that
-runs Node and provides Postgres (Render, Fly.io, a VPS) works the same way.
+1. **Import the repository.** In Vercel, choose *Add New → Project* and import this GitHub repository. The framework
+   (Next.js) and build settings are detected; leave them as they are.
+2. **Add a database.** In the project, open *Storage → Create Database → Neon (Postgres)*. Pick the **Singapore**
+   region (AWS ap-southeast-1) to match the site's functions, which [`vercel.json`](vercel.json) runs in Singapore
+   (`sin1`), close to Bangladesh. Connect it to all environments; this sets `DATABASE_URL`.
+3. **Add file storage.** *Storage → Create → Blob*, connected to the project. This sets `BLOB_READ_WRITE_TOKEN`, so
+   photos and PDFs uploaded in the admin are stored in Blob (up to 50 MB each). Without it, uploads are stored in the
+   database and must stay under 4 MB, Vercel's limit for a request to a function.
+4. **Set the admin secrets.** *Settings → Environment Variables*: add `ADMIN_PASSWORD` and `SESSION_SECRET`
+   (and `NEXT_PUBLIC_SITE_URL` if you use a custom domain).
+5. **Deploy.** The first visit creates the tables and loads the original content. Then sign in at `/admin`.
 
-Uploaded photos and PDFs are stored in the database (table `media`), so backing up Postgres backs up everything.
-Static assets that ship with the code live in [`public/`](public/): the original portrait, CV PDF and moment photos.
+Notes:
+
+- Preview deployments use the same database unless you give them their own, so edits made on a preview are real.
+- Photos are resized in the browser before upload (longest side 2400 px), which also removes location data.
+- Connections use `prepare: false`, so they work through Neon's and Supabase's connection poolers.
+
+## Other hosts
+
+The site also runs as a plain Node server (`npm run build`, then `npm start`; it listens on `$PORT`) next to any
+Postgres database, for example on Railway, Render, Fly.io or a VPS. Set the variables above. Without a Blob store,
+uploaded photos and PDFs are stored in the database (table `media`, up to 10 MB each), so backing up Postgres backs up
+everything. Static assets that ship with the code live in [`public/`](public/): the original portrait, CV PDF, moment
+photos and lecture images.
 
 ## Code map
 
@@ -88,6 +107,7 @@ Static assets that ship with the code live in [`public/`](public/): the original
 | `src/content/derive.ts`     | Sorting, grouping and counts computed from content                             |
 | `src/content/seed/`         | The original content, loaded into an empty database                            |
 | `src/lib/markdown.ts`       | Renders lecture notes (Markdown, raw HTML escaped) with code highlighting      |
+| `src/lib/env.ts`            | Database URL and where uploads go (Vercel Blob or the database)                 |
 | `src/app/(site)/`           | Public pages                                                                    |
 | `src/app/admin/`            | Admin pages and server actions                                                  |
 | `src/components/admin/`     | Admin form, list and navigation components                                      |

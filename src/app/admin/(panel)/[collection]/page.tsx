@@ -9,6 +9,7 @@ import { getSpec, sourceKey, type ListSpec } from "@/content/schema";
 import { getSingle, listEntries, loadSources } from "@/content/store";
 import type { SourceOptions } from "@/content/validate";
 import { requireAdmin } from "@/lib/auth";
+import { uploadConfig } from "@/lib/env";
 
 type Props = {
   params: Promise<{ collection: string }>;
@@ -41,6 +42,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
           initial={entry?.data ?? {}}
           updatedAt={entry?.updatedAt}
           sources={sources}
+          uploads={uploadConfig()}
         />
       </>
     );

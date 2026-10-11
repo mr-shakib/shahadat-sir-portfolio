@@ -5,7 +5,8 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   images: { unoptimized: true },
   experimental: {
-    // Photo and CV uploads from the admin go through server actions.
+    // Uploads stored in the database go through server actions (Vercel caps these at 4.5 MB;
+    // with a Blob store connected, uploads go straight to Blob instead).
     serverActions: { bodySizeLimit: "12mb" },
   },
 };

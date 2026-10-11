@@ -12,10 +12,11 @@ import {
   LuUpload,
   LuX,
 } from "react-icons/lu";
-import { uploadFile } from "@/app/admin/actions";
 import type { Field } from "@/content/schema";
 import { optionList, type Errors, type SourceOptions } from "@/content/validate";
+import type { UploadConfig } from "@/lib/env";
 import { MarkdownEditor } from "./MarkdownEditor";
+import { uploadOne } from "./upload";
 
 export type Path = (string | number)[];
 
@@ -25,6 +26,7 @@ type FormContext = {
   set: (path: Path, value: unknown) => void;
   /** Tracks uploads in flight, so saving waits for them. */
   uploading: (delta: 1 | -1) => void;
+  uploads: UploadConfig;
 };
 
 export const FormCtx = createContext<FormContext | null>(null);
@@ -34,7 +36,6 @@ export const fieldId = (path: Path) => `field-${path.join("-")}`;
 const errorKey = (path: Path) => path.join(".");
 const str = (v: unknown) => (typeof v === "string" ? v : typeof v === "number" ? String(v) : "");
 const arr = (v: unknown) => (Array.isArray(v) ? v : []);
-const MAX_UPLOAD = 10 * 1024 * 1024;
 
 const span = (f: Field) => {
   if (f.type === "group" || f.type === "list" || f.type === "images" || f.type === "markdown") return "sm:col-span-6";
@@ -91,7 +92,7 @@ function Help({ field, path, error }: { field: Field; path: Path; error?: string
 }
 
 function FieldControl({ field: f, value, path }: { field: Field; value: unknown; path: Path }) {
-  const { errors, sources, set, uploading } = useForm();
+  const { errors, sources, set, uploading, uploads } = useForm();
   const error = errors[errorKey(path)];
   const id = fieldId(path);
   const a11y = {
@@ -155,6 +156,7 @@ function FieldControl({ field: f, value, path }: { field: Field; value: unknown;
             invalid={Boolean(error)}
             describedBy={a11y["aria-describedby"]}
             uploading={uploading}
+            uploads={uploads}
           />
           <Help field={f} path={path} error={error} />
         </>
@@ -569,7 +571,7 @@ function Upload({
   multiple?: boolean;
   onUploaded: (urls: string[]) => void;
 }) {
-  const { uploading } = useForm();
+  const { uploading, uploads } = useForm();
   const input = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<string>();
   const [error, setError] = useState<string>();
@@ -583,20 +585,12 @@ function Upload({
     try {
       for (const [i, file] of files.entries()) {
         setStatus(files.length > 1 ? `Uploading ${i + 1} of ${files.length}…` : "Uploading…");
-        if (file.size > MAX_UPLOAD) {
-          problems.push(`${file.name}: larger than 10 MB`);
-          continue;
-        }
-        const form = new FormData();
-        form.set("file", file);
-        form.set("kind", kind);
-        try {
-          const result = await uploadFile(form);
-          if ("url" in result) urls.push(result.url);
-          else problems.push(files.length > 1 ? `${file.name}: ${result.error}` : result.error);
-        } catch {
-          problems.push(`${file.name}: the upload failed. Check your connection and try again.`);
-        }
+        const result = await uploadOne(file, kind, uploads);
+        if ("url" in result) urls.push(result.url);
+        else
+          problems.push(
+            files.length > 1 && !result.error.includes(file.name) ? `${file.name}: ${result.error}` : result.error,
+          );
       }
     } finally {
       uploading(-1);

@@ -15,7 +15,9 @@ import {
   LuListOrdered,
   LuSquareCode,
 } from "react-icons/lu";
-import { previewMarkdown, uploadFile } from "@/app/admin/actions";
+import { previewMarkdown } from "@/app/admin/actions";
+import type { UploadConfig } from "@/lib/env";
+import { uploadOne } from "./upload";
 
 type Props = {
   id: string;
@@ -25,6 +27,7 @@ type Props = {
   describedBy?: string;
   /** Tracks uploads in flight, so the form waits for them before saving. */
   uploading: (delta: 1 | -1) => void;
+  uploads: UploadConfig;
 };
 
 type Edit = { text: string; start: number; end: number };
@@ -36,7 +39,7 @@ const lineBounds = (t: string, s: number, e: number) => {
 };
 
 /** Markdown textarea with a formatting toolbar, image upload and a rendered preview. */
-export function MarkdownEditor({ id, value, onChange, invalid, describedBy, uploading }: Props) {
+export function MarkdownEditor({ id, value, onChange, invalid, describedBy, uploading, uploads }: Props) {
   const area = useRef<HTMLTextAreaElement>(null);
   const picker = useRef<HTMLInputElement>(null);
   const [tab, setTab] = useState<"write" | "preview">("write");
@@ -104,10 +107,7 @@ export function MarkdownEditor({ id, value, onChange, invalid, describedBy, uplo
     try {
       for (const [i, file] of files.entries()) {
         setStatus(files.length > 1 ? `Uploading ${i + 1} of ${files.length}…` : "Uploading…");
-        const form = new FormData();
-        form.set("file", file);
-        form.set("kind", "image");
-        const result = await uploadFile(form).catch(() => ({ error: "The upload failed. Try again." }));
+        const result = await uploadOne(file, "image", uploads);
         if ("url" in result) snippets.push(`![${file.name.replace(/\.[^.]+$/, "")}](${result.url})`);
         else setError(result.error);
       }

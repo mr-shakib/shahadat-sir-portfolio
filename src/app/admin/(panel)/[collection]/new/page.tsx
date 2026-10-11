@@ -6,6 +6,7 @@ import { getSpec, type ListSpec } from "@/content/schema";
 import { getEntry, loadSources } from "@/content/store";
 import { optionList } from "@/content/validate";
 import { requireAdmin } from "@/lib/auth";
+import { uploadConfig } from "@/lib/env";
 
 type Props = {
   params: Promise<{ collection: string }>;
@@ -52,7 +53,13 @@ export default async function NewEntryPage({ params, searchParams }: Props) {
           <span className="min-w-0 truncate text-fg-2">“{list.title(previous.data as never)}”</span>
         </Notice>
       )}
-      <EntryForm key={added ?? "new"} collection={list.key} initial={initial} sources={sources} />
+      <EntryForm
+        key={added ?? "new"}
+        collection={list.key}
+        initial={initial}
+        sources={sources}
+        uploads={uploadConfig()}
+      />
     </>
   );
 }

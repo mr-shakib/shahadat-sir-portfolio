@@ -4,6 +4,7 @@ import { sourceOptions, specs, type Spec } from "./schema";
 import { seed } from "./seed";
 import type { ListKey } from "./types";
 import { validate } from "./validate";
+import { databaseUrl } from "@/lib/env";
 
 declare global {
   var __portfolioSql: postgres.Sql | undefined;
@@ -13,9 +14,17 @@ declare global {
 /** The shared connection pool, created on first use so builds don't need a database. */
 export function db() {
   if (!globalThis.__portfolioSql) {
-    const url = process.env.DATABASE_URL;
+    const url = databaseUrl();
     if (!url) throw new Error("DATABASE_URL is not set. Copy .env.example to .env.local and fill it in.");
-    globalThis.__portfolioSql = postgres(url, { max: 5, idle_timeout: 30, onnotice: () => {} });
+    globalThis.__portfolioSql = postgres(url, {
+      max: 5,
+      idle_timeout: 20,
+      connect_timeout: 15,
+      // Hosted databases on Vercel are reached through a connection pooler (PgBouncer, Supavisor),
+      // which can't keep prepared statements between transactions.
+      prepare: false,
+      onnotice: () => {},
+    });
   }
   return globalThis.__portfolioSql;
 }
