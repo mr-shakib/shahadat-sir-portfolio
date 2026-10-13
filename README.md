@@ -9,7 +9,7 @@ edited in a built-in admin panel at `/admin`.
 | Route           | Content                                                                                   |
 | --------------- | ----------------------------------------------------------------------------------------- |
 | `/`             | Profile hero (photo, title, research areas, key numbers), "at a glance" charts, biography, research themes, news, selected publications |
-| `/research/`    | Doctoral research, research themes with related papers, methods, frequent co-authors      |
+| `/research/`    | Research themes with related papers, methods, frequent co-authors                         |
 | `/publications/`| Filterable/searchable list, publications-per-year chart, DOI links, APA + BibTeX "Cite"  |
 | `/teaching/`    | Teaching philosophy, course materials, full teaching history by semester                  |
 | `/teaching/<course>/` | Course page: its lectures in order, with short previews                             |

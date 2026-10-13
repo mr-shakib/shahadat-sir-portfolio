@@ -10,6 +10,7 @@ const delay = (ms: number) => ({ "--rise-delay": `${ms}ms` }) as CSSProperties;
 
 export function Hero({ content }: { content: Content }) {
   const { profile, research, socials } = content;
+  const caption = profile.photoCaption;
   const stats = [
     { value: content.publications.length, label: "Peer-reviewed publications" },
     { value: `${new Date().getFullYear() - teachingSince(content)}+`, label: "Years of university teaching" },
@@ -30,15 +31,21 @@ export function Hero({ content }: { content: Content }) {
               sizes="(min-width: 1024px) 45vw, 100vw"
               className="photo-in object-cover object-[50%_10%] sm:object-[50%_18%] lg:object-[50%_6%]"
             />
-            <div
-              aria-hidden
-              className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0b1324]/75 via-[#0b1324]/25 to-transparent"
-            />
-            <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
-              <p className="text-[12px] font-semibold tracking-[0.12em] text-white/70 uppercase">Currently</p>
-              <p className="mt-1 text-[15px] font-semibold">PhD Researcher, {profile.phd.institution}</p>
-              <p className="text-[13.5px] text-white/80">Supervised by {profile.phd.supervisor}</p>
-            </div>
+            {caption?.title && (
+              <>
+                <div
+                  aria-hidden
+                  className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0b1324]/75 via-[#0b1324]/25 to-transparent"
+                />
+                <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
+                  <p className="text-[12px] font-semibold tracking-[0.12em] text-white/70 uppercase">
+                    {caption.label || "Currently"}
+                  </p>
+                  <p className="mt-1 text-[15px] font-semibold">{caption.title}</p>
+                  {caption.detail && <p className="text-[13.5px] text-white/80">{caption.detail}</p>}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Profile */}

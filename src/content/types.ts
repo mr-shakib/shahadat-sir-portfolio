@@ -18,7 +18,8 @@ export type Profile = {
   focusAreas: string[];
   bio: string[];
   authorNames: string[];
-  phd: { degree: string; institution: string; supervisor: string; supervisorRole?: string };
+  /** Optional caption over the home page photo. Hidden while `title` is empty. */
+  photoCaption?: { label?: string; title?: string; detail?: string };
 };
 
 export type SocialKey =

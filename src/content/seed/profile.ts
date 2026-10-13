@@ -29,12 +29,6 @@ export const profile: Profile = {
     "My work has appeared with Springer, IEEE, ACM, Taylor & Francis, IGI Global and AIP, and received the Excellent Contributor Award at the International Conference on Intelligent Computing & Optimization (ICO 2022). Alongside research, I care deeply about outcome-based education, and I am the author of “Teaching with Outcome: A Faculty Guide to OBE”.",
   ],
   authorNames: ["Shahadat Hossain", "S. Hossain"],
-  phd: {
-    degree: "PhD in Computer Science and Engineering (ongoing)",
-    institution: "Jahangirnagar University",
-    supervisor: "Prof. Dr. Mohammad Shorif Uddin",
-    supervisorRole: "Professor, Dept. of CSE, Jahangirnagar University",
-  },
 };
 
 export const socials: Social[] = [

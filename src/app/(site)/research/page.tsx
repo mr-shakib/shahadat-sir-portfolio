@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LuArrowRight, LuArrowUpRight, LuGraduationCap, LuMicroscope } from "react-icons/lu";
+import { LuArrowRight, LuArrowUpRight } from "react-icons/lu";
 import { PageHeader } from "@/components/PageHeader";
 import { Reveal } from "@/components/Reveal";
 import { SectionHeading } from "@/components/SectionHeading";
@@ -57,37 +57,6 @@ export default async function ResearchPage() {
         title="Research"
         description="I study how people behave on digital platforms, combining machine learning, behavior analysis and information visualization to explain what drives their decisions."
       />
-
-      {/* Current research */}
-      <section className="container-page pt-16">
-        <Reveal className="card grid gap-8 overflow-hidden p-0 md:grid-cols-[minmax(0,1fr)_340px]">
-          <div className="p-7 sm:p-9">
-            <h2 className="flex items-center gap-3 font-serif text-2xl font-medium tracking-[-0.01em] sm:text-[1.75rem]">
-              <LuMicroscope className="size-5 text-primary" aria-hidden /> Doctoral research
-            </h2>
-            <p className="mt-4 leading-relaxed text-fg-2">
-              I am pursuing a PhD in Computer Science and Engineering at {profile.phd.institution}, supervised by{" "}
-              {profile.phd.supervisor}, alongside my faculty role at {profile.university}.
-            </p>
-          </div>
-          <div className="flex flex-col justify-center gap-5 border-t border-line bg-surface-2 p-7 sm:p-9 md:border-t-0 md:border-l">
-            <div className="flex items-center gap-3">
-              <span className="inline-flex size-10 items-center justify-center rounded-full bg-primary text-on-primary">
-                <LuGraduationCap className="size-5" aria-hidden />
-              </span>
-              <div>
-                <p className="text-sm font-semibold text-fg">{profile.phd.institution}</p>
-                <p className="text-sm text-muted">PhD in CSE · ongoing</p>
-              </div>
-            </div>
-            <div className="text-sm">
-              <p className="text-muted">Supervisor</p>
-              <p className="font-medium text-fg">{profile.phd.supervisor}</p>
-              {profile.phd.supervisorRole && <p className="text-muted">{profile.phd.supervisorRole}</p>}
-            </div>
-          </div>
-        </Reveal>
-      </section>
 
       {/* Themes */}
       <section className="container-page py-20" aria-labelledby="themes-h">

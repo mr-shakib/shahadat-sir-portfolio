@@ -59,12 +59,17 @@ export const positions: Position[] = [
 
 export const education: Degree[] = [
   {
-    degree: "Doctor of Philosophy (PhD)",
+    degree: "PhD",
     field: "Computer Science and Engineering",
     institution: "Jahangirnagar University, Bangladesh",
     year: "Ongoing",
     supervisor:
-      "Prof. Dr. Mohammad Shorif Uddin, Dept. of CSE, Jahangirnagar University; Vice-Chancellor, Green University of Bangladesh",
+      "Dr. Mohammad Shorif Uddin, Professor, Dept. of CSE, Jahangirnagar University; Vice-Chancellor, Green University",
+  },
+  {
+    degree: "Diploma in Outcome-Based Education and Academic Quality Assurance",
+    institution: "Alison Academy",
+    year: "2025",
   },
   {
     degree: "Master of Computer Science",
@@ -72,28 +77,27 @@ export const education: Degree[] = [
     institution: "American International University-Bangladesh (AIUB)",
     year: "2020",
     thesis: "An Analytical Study on Consumers’ Behaviors in Facebook Groups and Pages",
-    supervisor: "Md. Manzurul Hasan, Dept. of CS, AIUB",
+    supervisor: "Md. Manzurul Hasan, Assistant Professor, Dept. of CS, AIUB",
     result: "CGPA 3.83 / 4.00",
     honor: "Cum Laude Distinction",
   },
   {
-    degree: "Bachelor of Science",
-    field: "Computer Science",
+    degree: "Bachelor in Computer Science",
     institution: "American International University-Bangladesh (AIUB)",
     year: "2018",
     thesis: "Finding Classes from Given Topics or Scenarios Using NLP Tools",
-    supervisor: "Md. Sabbir Ahamed, Dept. of CS, AIUB",
+    supervisor: "Md. Sabbir Ahamed, Assistant Professor, Dept. of CS, AIUB",
     result: "CGPA 3.56 / 4.00",
   },
   {
     degree: "Higher Secondary Certificate (Science)",
-    institution: "Saint Joseph Higher Secondary School, Dhaka",
+    institution: "Saint Joseph Higher Secondary School, Dhaka, Bangladesh",
     year: "2012",
     result: "GPA 5.00 / 5.00",
   },
   {
     degree: "Secondary School Certificate (Science)",
-    institution: "Govt. Science College Attached High School, Dhaka",
+    institution: "Govt. Science College Attached High School, Dhaka, Bangladesh",
     year: "2010",
     result: "GPA 5.00 / 5.00",
   },
@@ -121,7 +125,6 @@ export const awards: Award[] = [
 ];
 
 export const certifications: Certification[] = [
-  { title: "Diploma in Outcome-Based Education and Academic Quality Assurance", by: "Alison", year: "2025" },
   { title: "Google Data Analytics Professional Certificate (8 courses)", by: "Google · Coursera", year: "" },
   { title: "The Fundamentals of Digital Marketing", by: "Google Digital Garage", year: "" },
   { title: "CCNA (75-hour course)", by: "Linux Pathshala", year: "2019" },
