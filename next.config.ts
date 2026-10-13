@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 // Runs as a Node server: pages read their content from Postgres, edited at /admin.
 const nextConfig: NextConfig = {
+  // .next/standalone holds the server and only the dependencies it uses; the Docker image ships just that.
+  output: "standalone",
   trailingSlash: true,
   images: { unoptimized: true },
   experimental: {

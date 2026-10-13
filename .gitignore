@@ -5,6 +5,7 @@ next-env.d.ts
 *.tsbuildinfo
 .DS_Store
 .env*.local
+deploy/.env
 
 # Source CV (contains a private home address); the site serves public/cv/ instead
 /Academic_CV_*.docx

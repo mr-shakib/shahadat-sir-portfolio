@@ -1,0 +1,27 @@
+# Routing for the host's shared edge proxy, mounted there as /etc/caddy/sites/shahadat.caddy.
+# Caddy obtains and renews the HTTPS certificates itself.
+
+shahadathossain.site {
+	encode zstd gzip
+	# Admin uploads are capped at 10 MB by the app; leave room for the form around them.
+	request_body {
+		max_size 15MB
+	}
+	reverse_proxy shahadat-web:3000
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+	log {
+		output file /var/log/caddy/shahadat-access.log {
+			roll_size 10MiB
+			roll_keep 5
+		}
+	}
+}
+
+www.shahadathossain.site {
+	redir https://shahadathossain.site{uri} permanent
+}

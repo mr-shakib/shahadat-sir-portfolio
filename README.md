@@ -69,7 +69,47 @@ The 49 lectures in `src/content/seed/lectures.json` were imported from the cours
 | `NEXT_PUBLIC_SITE_URL`  | Public URL, for canonical links, the sitemap and social previews. On Vercel it defaults to the production domain; set it for a custom domain. |
 | `BLOB_READ_WRITE_TOKEN` | Optional. Set by Vercel when a Blob store is connected; admin uploads then go to Blob.        |
 
-## Deploy on Vercel
+## Deploy on the VPS (production)
+
+The live site, **https://shahadathossain.site**, runs with Docker on a VPS:
+
+| File                             | What it is                                                                       |
+| -------------------------------- | -------------------------------------------------------------------------------- |
+| `Dockerfile`                     | Builds the site as a standalone Node server                                      |
+| `deploy/docker-compose.prod.yml` | The site and its own Postgres database                                           |
+| `deploy/edge.caddy`              | Routing for the server's shared Caddy proxy, which handles HTTPS                 |
+| `deploy/backup.sh`               | Nightly database dump (uploads live in the database, so this covers everything)  |
+| `deploy/.env.example`            | Settings; copied to `deploy/.env` on the server, never committed                 |
+
+The server runs one Caddy proxy for all its sites (`~/edge`). It reaches this site as `shahadat-web` over the
+`edge-shahadat` network, which only the two of them share; the database is on the site's private network.
+
+**First setup**, once:
+
+```bash
+git clone https://github.com/mr-shakib/shahadat-sir-portfolio.git ~/shahadat-portfolio
+cd ~/shahadat-portfolio
+cp deploy/.env.example deploy/.env      # then fill in the passwords
+docker network create edge-shahadat
+docker compose -f deploy/docker-compose.prod.yml up -d --build
+```
+
+Then in `~/edge/docker-compose.yml`, mount `deploy/edge.caddy` as `/etc/caddy/sites/shahadat.caddy`, add
+`edge-shahadat` to the proxy's networks, and run `docker compose up -d` there. The domain's A records (`@` and
+`www`) must already point at the server, or the certificate can't be issued.
+
+**Update the site** after pushing to GitHub:
+
+```bash
+cd ~/shahadat-portfolio && git pull && docker compose -f deploy/docker-compose.prod.yml up -d --build
+```
+
+Content edited in `/admin` is in the database and survives updates; the seed files are only read into an empty database.
+
+**Backups.** Cron runs `deploy/backup.sh` at 02:30 and keeps 14 days of dumps in `/var/backups/shahadat-portfolio`.
+They are on the same server, so copy them somewhere else now and then. How to restore is in the script's header.
+
+## Deploy on Vercel (preview)
 
 **Quick preview, no database.** Import the repository into Vercel and deploy; nothing else is needed. Without
 `DATABASE_URL` the public site shows the original content from [`src/content/seed/`](src/content/seed/), read-only,

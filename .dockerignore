@@ -1,0 +1,13 @@
+.git
+node_modules
+.next
+out
+*.tsbuildinfo
+.DS_Store
+
+# Secrets stay out of the image; the server gets them from deploy/.env at runtime
+.env*
+deploy/.env
+
+# Source CV (contains a private home address)
+Academic_CV_*.docx
