@@ -20,7 +20,7 @@ edited in a built-in admin panel at `/admin`.
 | `/contact/`     | Email, phone, office, academic and social profiles                                        |
 | `/admin/`       | Password-protected admin for everything above                                             |
 
-Light and dark themes (follows the system setting, with a toggle), responsive down to 360px, SEO metadata,
+Light theme by default, with a toggle for dark, responsive down to 360px, SEO metadata,
 `schema.org/Person` JSON-LD, sitemap and robots.txt.
 
 ## Editing content

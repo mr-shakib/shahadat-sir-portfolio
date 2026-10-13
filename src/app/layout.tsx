@@ -18,14 +18,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f7f6f2" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b111c" },
-  ],
+  // Light by default; ThemeToggle switches this when a visitor picks the dark theme.
+  themeColor: "#f7f6f2",
 };
 
-// Runs before paint: marks JS as available and applies the saved / system theme without a flash.
-const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){d.classList.add('dark')}}catch(e){if(window.matchMedia('(prefers-color-scheme: dark)').matches){d.classList.add('dark')}}})();`;
+// Runs before paint: marks JS as available and applies a saved dark theme without a flash.
+// The site is light unless the visitor has chosen dark with the toggle.
+const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{if(localStorage.getItem('theme')==='dark'){d.classList.add('dark')}}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

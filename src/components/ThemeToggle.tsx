@@ -3,17 +3,25 @@
 import { useEffect, useState } from "react";
 import { LuMoon, LuSun } from "react-icons/lu";
 
+/** Matches the mobile browser's toolbar colour (the theme-color meta tag) to the theme in use. */
+function paintBrowserBar(dark: boolean) {
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0b111c" : "#f7f6f2");
+}
+
 export function ThemeToggle() {
   const [dark, setDark] = useState<boolean | null>(null);
 
   useEffect(() => {
-    setDark(document.documentElement.classList.contains("dark"));
+    const isDark = document.documentElement.classList.contains("dark");
+    setDark(isDark);
+    paintBrowserBar(isDark);
   }, []);
 
   const toggle = () => {
     const next = !document.documentElement.classList.contains("dark");
     document.documentElement.classList.toggle("dark", next);
     setDark(next);
+    paintBrowserBar(next);
     try {
       localStorage.setItem("theme", next ? "dark" : "light");
     } catch {
