@@ -3,7 +3,91 @@ import type { Moment } from "../types";
 /** Milestones from the "Memorable Moments" gallery. Photos live in /public/moments/. */
 const img = (...names: string[]) => names.map((n) => `/moments/${n}.jpg`);
 
+const range = (name: string, count: number) => img(...Array.from({ length: count }, (_, i) => `${name}-${i + 1}`));
+
 export const moments: Moment[] = [
+  {
+    year: 2026,
+    title: "Workshop on Building Equity",
+    caption:
+      "Took part in the British Council–funded workshop with Nottingham Trent University on assessing the Extended Inclusive Education Toolkit, 23–24 April, Hotel InterContinental Dhaka.",
+    category: "Academic",
+    images: range("2026-building-equity", 3),
+  },
+  {
+    year: 2026,
+    title: "Book Launch: Teaching with Outcome",
+    caption:
+      "Inauguration and distribution of my book, “Teaching with Outcome: A Faculty Guide to OBE”, organized by the OBE and Accreditation Committee, Department of CSE, Daffodil International University.",
+    category: "Academic",
+    images: range("2026-book-launch", 6),
+  },
+  {
+    year: 2025,
+    title: "Workshop on the Ethical Use of GenAI",
+    caption:
+      "Joined the British Council–funded workshop with Nottingham Trent University on co-creating guidelines for the ethical use of generative AI by higher education and TVET students in Bangladesh, 9 December, Hotel InterContinental Dhaka.",
+    category: "Academic",
+    images: range("2025-genai-workshop", 3),
+  },
+  {
+    year: 2025,
+    title: "DIU CyberCon National Capture the Flag",
+    caption: "At DIU CyberCon’s National Capture the Flag competition, a national cybersecurity contest held on 18 and 25 October.",
+    category: "Teaching",
+    images: range("2025-cybercon-ctf", 3),
+  },
+  {
+    year: 2025,
+    title: "Prompt Battle: Prize-Giving Ceremony",
+    caption:
+      "Prize-giving ceremony of “The Skill of Asking: Prompt Battle”, a prompt engineering contest run by DIU’s Computer Programming Club, Summer 2025.",
+    category: "Teaching",
+    images: img("2025-prompt-battle"),
+  },
+  {
+    year: 2025,
+    title: "Effective Module Leadership",
+    caption: "Sessions for CSE faculty on OBE-based teaching, assessment and continuous quality improvement (CQI) practice.",
+    category: "Teaching",
+    images: range("2025-module-leadership", 4),
+  },
+  {
+    year: 2025,
+    title: "BAETE Training on Program Evaluation",
+    caption:
+      "Received a certificate at a training session of the Board of Accreditation for Engineering and Technical Education (BAETE) on program evaluation.",
+    category: "Academic",
+    images: range("2025-baete-training", 2),
+  },
+  {
+    year: 2025,
+    title: "Talks and Sessions at DIU",
+    caption: "Speaking at seminars, student sessions and classes at Daffodil International University.",
+    category: "Teaching",
+    images: range("2025-talks", 6),
+  },
+  {
+    year: 2025,
+    title: "Everyday Moments",
+    caption: "Sunset at sea, and a quick photo with a colleague.",
+    category: "Life",
+    images: range("2025-everyday", 2),
+  },
+  {
+    year: 2024,
+    title: "ICPC Asia Dhaka Regional Contest 2024",
+    caption: "At the ICPC Asia Dhaka Regional Contest 2024.",
+    category: "Teaching",
+    images: range("2024-icpc-dhaka", 4),
+  },
+  {
+    year: 2024,
+    title: "11th Convocation, DIU",
+    caption: "At Daffodil International University’s 11th Convocation in 2024, and earlier at its 10th.",
+    category: "Academic",
+    images: range("2024-convocation", 2),
+  },
   {
     year: 2021,
     title: "20th Convocation Ceremony, AIUB",

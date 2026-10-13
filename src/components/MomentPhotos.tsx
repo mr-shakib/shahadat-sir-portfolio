@@ -32,11 +32,14 @@ export function MomentPhotos({ images, title }: { images: string[]; title: strin
       : images.length === 2
         ? "grid-cols-2"
         : "grid-cols-2 grid-rows-2 [&>*:first-child]:row-span-2";
+  // The card shows three photos at most; the last tile says how many more the lightbox holds.
+  const shown = images.slice(0, 3);
+  const more = images.length - shown.length;
 
   return (
     <>
       <div className={`grid aspect-[4/3] gap-[2px] bg-line ${layout}`}>
-        {images.map((src, i) => (
+        {shown.map((src, i) => (
           <button
             key={src}
             type="button"
@@ -51,6 +54,11 @@ export function MomentPhotos({ images, title }: { images: string[]; title: strin
               sizes="(min-width: 768px) 30vw, 90vw"
               className="object-cover transition duration-500 group-hover:scale-[1.03]"
             />
+            {more > 0 && i === shown.length - 1 && (
+              <span className="absolute inset-0 flex items-center justify-center bg-ink/55 text-lg font-semibold text-white">
+                +{more}
+              </span>
+            )}
           </button>
         ))}
       </div>
